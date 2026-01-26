@@ -7,7 +7,7 @@ namespace UnityEngine
 	public class Object
 	{
 		private static int _nextId = 1;
-		private static readonly HashSet<Object> _allObjects = new();
+		internal static readonly HashSet<Object> _allObjects = new();
 
 		public String name { get; set; }
 		internal int InstanceId { get; } = _nextId++;
@@ -18,6 +18,7 @@ namespace UnityEngine
 		{
 			if (obj != null)
 			{
+				if (obj is MonoBehaviour mb) mb.InternalOnDestroy();
 				_allObjects.Remove(obj);
 			}
 		}
@@ -53,7 +54,26 @@ namespace UnityEngine
 
 	public class MonoBehaviour : Behaviour
 	{
+		internal bool _awakeCalled;
+		internal bool _startCalled;
+
 		public Coroutine StartCoroutine(System.Collections.IEnumerator routine) => new Coroutine();
+
+		protected virtual void Awake() { }
+		protected virtual void Start() { }
+		protected virtual void Update() { }
+		protected virtual void FixedUpdate() { }
+		protected virtual void OnEnable() { }
+		protected virtual void OnDisable() { }
+		protected virtual void OnDestroy() { }
+
+		internal void InternalAwake() => Awake();
+		internal void InternalStart() => Start();
+		internal void InternalUpdate() => Update();
+		internal void InternalFixedUpdate() => FixedUpdate();
+		internal void InternalOnEnable() => OnEnable();
+		internal void InternalOnDisable() => OnDisable();
+		internal void InternalOnDestroy() => OnDestroy();
 	}
 
 	public class Coroutine { }
@@ -63,6 +83,8 @@ namespace UnityEngine
 	public class Renderer : Component
 	{
 		public bool enabled { get; set; } = true;
+
+		public bool isVisible => enabled && gameObject.activeInHierarchy;
 	}
 
 	public class Transform : Behaviour, System.Collections.IEnumerable
@@ -115,7 +137,19 @@ namespace UnityEngine
 
 		public Transform transform => _transform;
 
-		public void SetActive(bool value) => activeSelf = value;
+		public void SetActive(bool value)
+		{
+			if (activeSelf == value) return;
+			activeSelf = value;
+			if (activeInHierarchy)
+			{
+				foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true)) mb.InternalOnEnable();
+			}
+			else
+			{
+				foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true)) mb.InternalOnDisable();
+			}
+		}
 
 		public T GetComponent<T>() where T : Component => _components.OfType<T>().FirstOrDefault();
 
@@ -142,6 +176,10 @@ namespace UnityEngine
 			{
 				component.gameObject = this;
 				_components.Add(component);
+				if (activeInHierarchy && component is MonoBehaviour mb)
+				{
+					mb.InternalOnEnable();
+				}
 			}
 			return component;
 		}

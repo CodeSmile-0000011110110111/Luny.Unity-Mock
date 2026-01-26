@@ -112,6 +112,7 @@ namespace UnityEngine
 		internal void InternalAwake() => InvokeMagicMethod("Awake");
 		internal void InternalStart() => InvokeMagicMethod("Start");
 		internal void InternalUpdate() => InvokeMagicMethod("Update");
+		internal void InternalLateUpdate() => InvokeMagicMethod("LateUpdate");
 		internal void InternalFixedUpdate() => InvokeMagicMethod("FixedUpdate");
 		internal void InternalOnEnable() => InvokeMagicMethod("OnEnable");
 		internal void InternalOnDisable() => InvokeMagicMethod("OnDisable");

@@ -9,6 +9,12 @@ namespace UnityEngine
 		private static int _nextId = 1;
 		internal static readonly HashSet<Object> _allObjects = new();
 
+		internal static void Reset_UnitTestsOnly()
+		{
+			_nextId = 1;
+			_allObjects.Clear();
+		}
+
 		public String name { get; set; }
 		internal int InstanceId { get; } = _nextId++;
 
@@ -48,7 +54,21 @@ namespace UnityEngine
 
 	public class Behaviour : Component
 	{
-		public bool enabled { get; set; } = true;
+		private bool _enabled = true;
+		public bool enabled
+		{
+			get => _enabled;
+			set
+			{
+				if (_enabled == value) return;
+				_enabled = value;
+				if (gameObject.activeInHierarchy)
+				{
+					if (_enabled && this is MonoBehaviour mb) mb.InternalOnEnable();
+					else if (!_enabled && this is MonoBehaviour mb2) mb2.InternalOnDisable();
+				}
+			}
+		}
 		public bool isActiveAndEnabled => enabled && gameObject != null && gameObject.activeInHierarchy;
 	}
 
@@ -140,14 +160,27 @@ namespace UnityEngine
 		public void SetActive(bool value)
 		{
 			if (activeSelf == value) return;
+			
+			bool wasActiveInHierarchy = activeInHierarchy;
 			activeSelf = value;
-			if (activeInHierarchy)
+			bool isNowActiveInHierarchy = activeInHierarchy;
+
+			if (wasActiveInHierarchy != isNowActiveInHierarchy)
 			{
-				foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true)) mb.InternalOnEnable();
-			}
-			else
-			{
-				foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true)) mb.InternalOnDisable();
+				if (isNowActiveInHierarchy)
+				{
+					foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true))
+					{
+						if (mb.enabled) mb.InternalOnEnable();
+					}
+				}
+				else
+				{
+					foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true))
+					{
+						if (mb.enabled) mb.InternalOnDisable();
+					}
+				}
 			}
 		}
 
@@ -176,9 +209,14 @@ namespace UnityEngine
 			{
 				component.gameObject = this;
 				_components.Add(component);
-				if (activeInHierarchy && component is MonoBehaviour mb)
+				
+				if (component is MonoBehaviour mb)
 				{
-					mb.InternalOnEnable();
+					mb.InternalAwake();
+					if (activeInHierarchy && mb.enabled)
+					{
+						mb.InternalOnEnable();
+					}
 				}
 			}
 			return component;
@@ -191,7 +229,7 @@ namespace UnityEngine
 		}
 
 		public static GameObject CreatePrimitive(PrimitiveType type) => new(type.ToString());
-		public static GameObject Find(string name) => throw new NotImplementedException("UnityEngine.GameObject.Find");
+		public static GameObject Find(string name) => _allObjects.OfType<GameObject>().FirstOrDefault(go => go.name == name);
 	}
 
 	public enum LogType

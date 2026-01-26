@@ -36,13 +36,11 @@ namespace UnityEngine
 		public RuntimeInitializeOnLoadMethodAttribute(RuntimeInitializeLoadType loadType) {}
 	}
 	[AttributeUsage(AttributeTargets.Field)]
-	public class SerializeFieldAttribute : Attribute
-	{
-	}
+	public class SerializeField : Attribute { }
 
 	[AttributeUsage(AttributeTargets.Field)]
 	public class HeaderAttribute : Attribute
 	{
-		public HeaderAttribute(string header) {}
+		public HeaderAttribute(string header) { }
 	}
 }

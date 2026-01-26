@@ -13,12 +13,30 @@ namespace UnityEngine
 
 	public static class Debug
 	{
-		public static void Log(object message) => throw new NotImplementedException("UnityEngine.Debug.Log");
-		public static void LogWarning(object message) => throw new NotImplementedException("UnityEngine.Debug.LogWarning");
-		public static void LogError(object message) => throw new NotImplementedException("UnityEngine.Debug.LogError");
-		public static void LogException(Exception exception) => throw new NotImplementedException("UnityEngine.Debug.LogException");
-		public static void LogFormat(LogType logType, Object context, string format, params object[] args) => throw new NotImplementedException("UnityEngine.Debug.LogFormat");
-		public static void Break() => throw new NotImplementedException("UnityEngine.Debug.Break");
+		public static void Log(object message) => Console.WriteLine(message);
+		public static void LogWarning(object message) => Console.WriteLine($"[Warning] {message}");
+		public static void LogError(object message) => Console.Error.WriteLine($"[Error] {message}");
+		public static void LogException(Exception exception) => Console.Error.WriteLine($"[Exception] {exception}");
+		public static void LogFormat(LogType logType, Object context, string format, params object[] args)
+		{
+			var message = string.Format(format, args);
+			switch (logType)
+			{
+				case LogType.Error:
+				case LogType.Assert:
+				case LogType.Exception:
+					Console.Error.WriteLine($"[{logType}] {message}");
+					break;
+				case LogType.Warning:
+					Console.WriteLine($"[Warning] {message}");
+					break;
+				default:
+					Console.WriteLine(message);
+					break;
+			}
+		}
+
+		public static void Break() => Console.WriteLine("[Debug.Break called]");
 	}
 
 	public static class Time

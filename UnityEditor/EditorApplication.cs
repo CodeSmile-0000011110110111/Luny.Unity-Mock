@@ -1,8 +1,10 @@
+using System;
+
 namespace UnityEditor
 {
-	public class EditorApplication
+	public static class EditorApplication
 	{
-		public static bool isPlaying { get; set; }
-		public static bool isPlayingOrWillChangePlaymode { get; }
+		public static Boolean isPlaying { get; set; }
+		public static Boolean isPlayingOrWillChangePlaymode { get; }
 	}
 }

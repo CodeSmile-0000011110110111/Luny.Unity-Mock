@@ -5,20 +5,18 @@ namespace UnityEngine
 	[AttributeUsage(AttributeTargets.Class)]
 	public class DefaultExecutionOrderAttribute : Attribute
 	{
-		public DefaultExecutionOrderAttribute(int order) {}
+		public DefaultExecutionOrderAttribute(Int32 order) {}
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
 	public class AddComponentMenuAttribute : Attribute
 	{
-		public AddComponentMenuAttribute(string menuName) {}
-		public AddComponentMenuAttribute(string menuName, int order) {}
+		public AddComponentMenuAttribute(String menuName) {}
+		public AddComponentMenuAttribute(String menuName, Int32 order) {}
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class DisallowMultipleComponentAttribute : Attribute
-	{
-	}
+	public class DisallowMultipleComponentAttribute : Attribute {}
 
 	public enum RuntimeInitializeLoadType
 	{
@@ -35,12 +33,13 @@ namespace UnityEngine
 		public RuntimeInitializeOnLoadMethodAttribute() {}
 		public RuntimeInitializeOnLoadMethodAttribute(RuntimeInitializeLoadType loadType) {}
 	}
+
 	[AttributeUsage(AttributeTargets.Field)]
-	public class SerializeField : Attribute { }
+	public class SerializeField : Attribute {}
 
 	[AttributeUsage(AttributeTargets.Field)]
 	public class HeaderAttribute : Attribute
 	{
-		public HeaderAttribute(string header) { }
+		public HeaderAttribute(String header) {}
 	}
 }

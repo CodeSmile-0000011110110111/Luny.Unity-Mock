@@ -26,7 +26,16 @@ namespace UnityEngine.SceneManagement
 		public static event Action<Scene> sceneUnloaded;
 		public static event Action<Scene, Scene> activeSceneChanged;
 
-		private static Scene _activeScene = new Scene { name = "SampleScene", isLoaded = true };
+		private static Scene _activeScene;
+
+		static SceneManager()
+		{
+			var s = new Scene();
+			s.name = "SampleScene";
+			s.path = "Assets/Scenes/SampleScene.unity";
+			s.isLoaded = true;
+			_activeScene = s;
+		}
 
 		public static void LoadScene(string sceneName, LoadSceneMode mode = LoadSceneMode.Single)
 		{
@@ -39,13 +48,21 @@ namespace UnityEngine.SceneManagement
 				var objectsToDestroy = Object._allObjects.ToList();
 				foreach (var obj in objectsToDestroy) Object.Destroy(obj);
 				
-				_activeScene = new Scene { name = sceneName, isLoaded = true };
+				var s = new Scene();
+				s.name = sceneName;
+				s.path = $"Assets/Scenes/{sceneName}.unity";
+				s.isLoaded = true;
+				_activeScene = s;
 				sceneLoaded?.Invoke(_activeScene, mode);
 				activeSceneChanged?.Invoke(oldScene, _activeScene);
 			}
 			else
 			{
-				sceneLoaded?.Invoke(new Scene { name = sceneName, isLoaded = true }, mode);
+				var s = new Scene();
+				s.name = sceneName;
+				s.path = $"Assets/Scenes/{sceneName}.unity";
+				s.isLoaded = true;
+				sceneLoaded?.Invoke(s, mode);
 			}
 		}
 

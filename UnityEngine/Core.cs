@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace UnityEngine
 {
@@ -9,10 +10,14 @@ namespace UnityEngine
 		private static int _nextId = 1;
 		internal static readonly HashSet<Object> _allObjects = new();
 
-		internal static void Reset_UnitTestsOnly()
+		public static void Reset_UnitTestsOnly()
 		{
 			_nextId = 1;
-			_allObjects.Clear();
+			var objects = _allObjects.ToList();
+			foreach (var obj in objects)
+			{
+				_allObjects.Remove(obj);
+			}
 		}
 
 		public String name { get; set; }
@@ -87,13 +92,37 @@ namespace UnityEngine
 		protected virtual void OnDisable() { }
 		protected virtual void OnDestroy() { }
 
-		internal void InternalAwake() => Awake();
-		internal void InternalStart() => Start();
-		internal void InternalUpdate() => Update();
-		internal void InternalFixedUpdate() => FixedUpdate();
-		internal void InternalOnEnable() => OnEnable();
-		internal void InternalOnDisable() => OnDisable();
-		internal void InternalOnDestroy() => OnDestroy();
+		private void InvokeMagicMethod(string name)
+		{
+			var type = GetType();
+			var method = type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+			if (method != null)
+			{
+				Console.WriteLine($"[DEBUG_LOG] Invoking {name} on {type.Name} from {method.DeclaringType.Name}");
+				method.Invoke(this, null);
+			}
+			else
+			{
+				Console.WriteLine($"[DEBUG_LOG] Method {name} NOT found on {type.Name}");
+			}
+		}
+
+		public static void LogAllMethods(Type type)
+		{
+			Console.WriteLine($"[DEBUG_LOG] Methods for {type.Name}:");
+			foreach (var m in type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
+			{
+				Console.WriteLine($"[DEBUG_LOG] - {m.Name} ({m.Attributes}) declared in {m.DeclaringType.Name}");
+			}
+		}
+
+		internal void InternalAwake() => InvokeMagicMethod(nameof(Awake));
+		internal void InternalStart() => InvokeMagicMethod(nameof(Start));
+		internal void InternalUpdate() => InvokeMagicMethod(nameof(Update));
+		internal void InternalFixedUpdate() => InvokeMagicMethod(nameof(FixedUpdate));
+		internal void InternalOnEnable() => InvokeMagicMethod(nameof(OnEnable));
+		internal void InternalOnDisable() => InvokeMagicMethod(nameof(OnDisable));
+		internal void InternalOnDestroy() => InvokeMagicMethod(nameof(OnDestroy));
 	}
 
 	public class Coroutine { }
@@ -147,9 +176,10 @@ namespace UnityEngine
 
 		public GameObject(string name)
 		{
+			activeSelf = true; // Set this before adding components so OnEnable can fire
 			this.name = name;
+			Console.WriteLine($"[DEBUG_LOG] Created GameObject '{name}'");
 			_transform = AddComponent<Transform>();
-			activeSelf = true;
 		}
 
 		public bool activeSelf { get; private set; }
@@ -169,16 +199,27 @@ namespace UnityEngine
 			{
 				if (isNowActiveInHierarchy)
 				{
+					// Unity triggers OnEnable for all components in the subtree that are enabled and have had Awake called
 					foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true))
 					{
-						if (mb.enabled) mb.InternalOnEnable();
+						if (mb.enabled && mb.gameObject.activeInHierarchy)
+						{
+							if (!mb._awakeCalled)
+							{
+								mb._awakeCalled = true;
+								mb.InternalAwake();
+							}
+							mb.InternalOnEnable();
+						}
 					}
 				}
 				else
 				{
 					foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true))
 					{
-						if (mb.enabled) mb.InternalOnDisable();
+						// OnDisable is called if the component was active and enabled
+						// Simplified check here
+						mb.InternalOnDisable();
 					}
 				}
 			}
@@ -212,7 +253,12 @@ namespace UnityEngine
 				
 				if (component is MonoBehaviour mb)
 				{
+					// Awake is ALWAYS called immediately upon AddComponent in Unity
+					// REGARDLESS of active state
+					mb._awakeCalled = true;
 					mb.InternalAwake();
+					
+					// OnEnable is called ONLY if the GameObject is active in hierarchy AND the component is enabled
 					if (activeInHierarchy && mb.enabled)
 					{
 						mb.InternalOnEnable();

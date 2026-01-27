@@ -46,9 +46,7 @@ namespace UnityEngine
 					{
 						mb.InternalAwake();
 						if (mb.enabled)
-						{
 							mb.InternalOnEnable();
-						}
 					}
 				}
 				else

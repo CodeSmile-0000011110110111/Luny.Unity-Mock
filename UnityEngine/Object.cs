@@ -19,14 +19,6 @@ namespace UnityEngine
 
 		public static Boolean operator !=(Object x, Object y) => !(x == y);
 
-		internal static void Reset_UnitTestsOnly()
-		{
-			_nextId = 1;
-			var objects = _allObjects.ToList();
-			foreach (var obj in objects)
-				_allObjects.Remove(obj);
-		}
-
 		public static void Destroy(Object obj)
 		{
 			if (obj != null)
@@ -38,6 +30,14 @@ namespace UnityEngine
 		}
 
 		public static void DontDestroyOnLoad(Object target) {}
+
+		internal static void Reset_UnitTestsOnly()
+		{
+			_nextId = 1;
+			var objects = _allObjects.ToList();
+			foreach (var obj in objects)
+				_allObjects.Remove(obj);
+		}
 
 		public Object() => _allObjects.Add(this);
 

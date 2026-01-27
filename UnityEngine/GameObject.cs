@@ -44,13 +44,9 @@ namespace UnityEngine
 					// Unity triggers OnEnable for all components in the subtree that are enabled and have had Awake called
 					foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true))
 					{
-						if (mb.enabled && mb.gameObject.activeInHierarchy)
+						mb.InternalAwake();
+						if (mb.enabled)
 						{
-							if (!mb._awakeCalled)
-							{
-								mb._awakeCalled = true;
-								mb.InternalAwake();
-							}
 							mb.InternalOnEnable();
 						}
 					}
@@ -58,8 +54,6 @@ namespace UnityEngine
 				else
 				{
 					foreach (var mb in GetComponentsInChildren<MonoBehaviour>(true))
-						// OnDisable is called if the component was active and enabled
-						// Simplified check here
 						mb.InternalOnDisable();
 				}
 			}
@@ -89,14 +83,16 @@ namespace UnityEngine
 
 				if (component is MonoBehaviour mb)
 				{
-					// Awake is ALWAYS called immediately upon AddComponent in Unity
-					// REGARDLESS of active state
-					mb._awakeCalled = true;
 					mb.InternalAwake();
 
 					// OnEnable is called ONLY if the GameObject is active in hierarchy AND the component is enabled
 					if (activeInHierarchy && mb.enabled)
+					{
 						mb.InternalOnEnable();
+
+						// since we only use AddComponent for the mock engine adapter, we call Start() right here as well
+						mb.InternalStart();
+					}
 				}
 			}
 			return component;

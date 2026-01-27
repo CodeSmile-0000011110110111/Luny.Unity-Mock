@@ -89,33 +89,61 @@ namespace UnityEngine
 
 		public static void LogAllMethods(Type type)
 		{
-			Console.WriteLine($"[DEBUG_LOG] Methods for {type.Name}:");
+			Console.WriteLine($"[DEBUG_LOG] [{nameof(MonoBehaviour)}] Methods for {type.Name}:");
 			foreach (var m in type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
-				Console.WriteLine($"[DEBUG_LOG] - {m.Name} ({m.Attributes}) declared in {m.DeclaringType.Name}");
+				Console.WriteLine($"[DEBUG_LOG] [{nameof(MonoBehaviour)}] - {m.Name} ({m.Attributes}) declared in {m.DeclaringType.Name}");
 		}
 
 		public Coroutine StartCoroutine(IEnumerator routine) => new();
 
-		private void InvokeMagicMethod(String name)
+		private void InvokeMessageMethod(Message message)
 		{
+			if (message == Message.Awake)
+			{
+				if (_awakeCalled)
+					return;
+
+				_awakeCalled = true;
+			}
+			else if (message == Message.Start)
+			{
+				if (_startCalled)
+					return;
+
+				_startCalled = true;
+			}
+
+			var methodName = message.ToString();
 			var type = GetType();
-			var method = type.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+			var method = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 			if (method != null)
 			{
-				Console.WriteLine($"[DEBUG_LOG] Invoking {name} on {type.Name} from {method.DeclaringType.Name}");
+				Console.WriteLine($"[DEBUG_LOG] [{nameof(MonoBehaviour)}] {type.Name} => {methodName}()");
 				method.Invoke(this, null);
 			}
 			else
-				Console.WriteLine($"[DEBUG_LOG] Method {name} NOT found on {type.Name}");
+				Console.WriteLine($"[DEBUG_LOG] [{nameof(MonoBehaviour)}] {type.Name} does not implement: {methodName}()");
 		}
 
-		internal void InternalAwake() => InvokeMagicMethod("Awake");
-		internal void InternalStart() => InvokeMagicMethod("Start");
-		internal void InternalUpdate() => InvokeMagicMethod("Update");
-		internal void InternalLateUpdate() => InvokeMagicMethod("LateUpdate");
-		internal void InternalFixedUpdate() => InvokeMagicMethod("FixedUpdate");
-		internal void InternalOnEnable() => InvokeMagicMethod("OnEnable");
-		internal void InternalOnDisable() => InvokeMagicMethod("OnDisable");
-		internal void InternalOnDestroy() => InvokeMagicMethod("OnDestroy");
+		internal void InternalAwake() => InvokeMessageMethod(Message.Awake);
+		internal void InternalOnDestroy() => InvokeMessageMethod(Message.OnDestroy);
+		internal void InternalOnEnable() => InvokeMessageMethod(Message.OnEnable);
+		internal void InternalOnDisable() => InvokeMessageMethod(Message.OnDisable);
+		internal void InternalStart() => InvokeMessageMethod(Message.Start);
+		internal void InternalFixedUpdate() => InvokeMessageMethod(Message.FixedUpdate);
+		internal void InternalUpdate() => InvokeMessageMethod(Message.Update);
+		internal void InternalLateUpdate() => InvokeMessageMethod(Message.LateUpdate);
+
+		private enum Message
+		{
+			Awake,
+			OnDestroy,
+			OnEnable,
+			OnDisable,
+			Start,
+			FixedUpdate,
+			Update,
+			LateUpdate,
+		}
 	}
 }

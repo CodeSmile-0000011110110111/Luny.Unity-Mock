@@ -19,7 +19,7 @@ namespace UnityEngine
 
 		public static Boolean operator !=(Object x, Object y) => !(x == y);
 
-		public static void Reset_UnitTestsOnly()
+		internal static void Reset_UnitTestsOnly()
 		{
 			_nextId = 1;
 			var objects = _allObjects.ToList();

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Luny.Unity-Mock")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+507890b884ade9f2f5938ba1818384f401cff215")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d42497fc8df6f38f92fd50b3c5147be0e7e7d63e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Luny.Unity-Mock")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Luny.Unity-Mock")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

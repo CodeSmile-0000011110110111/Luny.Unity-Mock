@@ -39,6 +39,21 @@ namespace UnityEngine
 				_allObjects.Remove(obj);
 		}
 
+		public static T Instantiate<T>(T original) where T : Object
+		{
+			if (original == null)
+				throw new ArgumentNullException(nameof(original));
+
+			// Mock: simple instantiation by creating a new instance of the same type
+			var instance = Activator.CreateInstance(original.GetType()) as T;
+			if (instance is GameObject go && original is GameObject originalGo)
+			{
+				go.name = originalGo.name + "(Clone)";
+				// Mock: we don't clone components for now to keep it simple
+			}
+			return instance;
+		}
+
 		public Object() => _allObjects.Add(this);
 
 		public override Boolean Equals(System.Object obj) => ReferenceEquals(this, obj) || obj is Object other && this == other;

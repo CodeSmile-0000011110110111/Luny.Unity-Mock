@@ -31,14 +31,6 @@ namespace UnityEngine
 
 		public static void DontDestroyOnLoad(Object target) {}
 
-		internal static void Reset_UnitTestsOnly()
-		{
-			_nextId = 1;
-			var objects = _allObjects.ToList();
-			foreach (var obj in objects)
-				_allObjects.Remove(obj);
-		}
-
 		public static T Instantiate<T>(T original) where T : Object
 		{
 			if (original == null)
@@ -52,6 +44,14 @@ namespace UnityEngine
 				// Mock: we don't clone components for now to keep it simple
 			}
 			return instance;
+		}
+
+		internal static void Reset_UnitTestsOnly()
+		{
+			_nextId = 1;
+			var objects = _allObjects.ToList();
+			foreach (var obj in objects)
+				_allObjects.Remove(obj);
 		}
 
 		public Object() => _allObjects.Add(this);

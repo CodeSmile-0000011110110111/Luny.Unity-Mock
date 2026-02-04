@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace UnityEngine
 {
@@ -15,7 +16,7 @@ namespace UnityEngine
 			// Mock: if path contains "Prefab", return a GameObject as prefab
 			if (path.Contains("Prefab"))
 			{
-				var go = new GameObject(System.IO.Path.GetFileName(path));
+				var go = new GameObject(Path.GetFileName(path));
 				go.SetActive(false); // Prefabs are inactive
 				_loadedAssets[path] = go;
 				return go;

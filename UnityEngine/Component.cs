@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 namespace UnityEngine
 {
@@ -118,8 +119,17 @@ namespace UnityEngine
 			var method = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
 			if (method != null)
 			{
-				Console.WriteLine($"[DEBUG_LOG] [{nameof(MonoBehaviour)}] {type.Name} => {methodName}()");
-				method.Invoke(this, null);
+				try
+				{
+					Console.WriteLine($"[DEBUG_LOG] [{nameof(MonoBehaviour)}] {type.Name} => {methodName}()");
+					method.Invoke(this, null);
+				}
+				catch (TargetInvocationException ex)
+				{
+					// To prevent exceptions changing to TargetInvocationException in tests,
+					// we capture the original exception and re-throw it without losing the stack trace
+					ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+				}
 			}
 			else
 				Console.WriteLine($"[DEBUG_LOG] [{nameof(MonoBehaviour)}] {type.Name} does not implement: {methodName}()");

@@ -3,22 +3,6 @@ using System.Linq;
 
 namespace UnityEngine.SceneManagement
 {
-	public struct Scene
-	{
-		public String name { get; set; }
-		public String path { get; set; }
-		public Boolean isLoaded { get; set; }
-		public Int32 buildIndex { get; set; }
-
-		public GameObject[] GetRootGameObjects() => Object._allObjects.OfType<GameObject>().Where(go => go.transform.parent == null).ToArray();
-	}
-
-	public enum LoadSceneMode
-	{
-		Single,
-		Additive,
-	}
-
 	public static class SceneManager
 	{
 		public static event Action<Scene, LoadSceneMode> sceneLoaded;
@@ -63,7 +47,7 @@ namespace UnityEngine.SceneManagement
 		{
 			var s = new Scene();
 			s.name = "SampleScene";
-			s.path = "Assets/Scenes/SampleScene.unity";
+			s.path = "Assets/Scenes/Untitled.unity";
 			s.isLoaded = true;
 			_activeScene = s;
 		}

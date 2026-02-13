@@ -3,12 +3,6 @@ using System;
 namespace UnityEngine
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class DefaultExecutionOrderAttribute : Attribute
-	{
-		public DefaultExecutionOrderAttribute(Int32 order) {}
-	}
-
-	[AttributeUsage(AttributeTargets.Class)]
 	public class AddComponentMenuAttribute : Attribute
 	{
 		public AddComponentMenuAttribute(String menuName) {}
@@ -16,15 +10,18 @@ namespace UnityEngine
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
+	public class DefaultExecutionOrderAttribute : Attribute
+	{
+		public DefaultExecutionOrderAttribute(Int32 order) {}
+	}
+
+	[AttributeUsage(AttributeTargets.Class)]
 	public class DisallowMultipleComponentAttribute : Attribute {}
 
-	public enum RuntimeInitializeLoadType
+	[AttributeUsage(AttributeTargets.Field)]
+	public class HeaderAttribute : Attribute
 	{
-		AfterSceneLoad,
-		BeforeSceneLoad,
-		AfterAssembliesLoaded,
-		BeforeSplashScreen,
-		SubsystemRegistration,
+		public HeaderAttribute(String header) {}
 	}
 
 	[AttributeUsage(AttributeTargets.Method)]
@@ -36,10 +33,4 @@ namespace UnityEngine
 
 	[AttributeUsage(AttributeTargets.Field)]
 	public class SerializeField : Attribute {}
-
-	[AttributeUsage(AttributeTargets.Field)]
-	public class HeaderAttribute : Attribute
-	{
-		public HeaderAttribute(String header) {}
-	}
 }

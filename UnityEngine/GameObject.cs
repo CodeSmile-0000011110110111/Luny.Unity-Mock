@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace UnityEngine
 {
-	public class GameObject : Object
+	public sealed class GameObject : Object
 	{
 		private readonly List<Component> _components = new();
 		private readonly Transform _transform;

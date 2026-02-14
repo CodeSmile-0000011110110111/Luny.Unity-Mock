@@ -11,6 +11,4 @@ namespace UnityEngine
 		public static void Quit() => Console.WriteLine("Application.Quit called");
 		public static void Quit(Int32 exitCode) => Console.WriteLine($"Application.Quit({exitCode}) called");
 	}
-
-
 }

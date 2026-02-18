@@ -9,7 +9,7 @@ namespace UnityEngine.InputSystem
 
 		public String name { get; }
 		public InputActionType type { get; }
-		public String expectedControlLayout { get; }
+		public String expectedControlType { get; }
 		public InputActionPhase phase => _phase;
 		public Boolean enabled => _phase != InputActionPhase.Disabled;
 
@@ -17,11 +17,11 @@ namespace UnityEngine.InputSystem
 		public event Action<CallbackContext> performed;
 		public event Action<CallbackContext> canceled;
 
-		public InputAction(String name = default, InputActionType type = default, String expectedControlLayout = default)
+		public InputAction(String name = default, InputActionType type = default, String expectedControlType = default)
 		{
 			this.name = name;
 			this.type = type;
-			this.expectedControlLayout = expectedControlLayout;
+			this.expectedControlType = expectedControlType;
 		}
 
 		public void Enable()

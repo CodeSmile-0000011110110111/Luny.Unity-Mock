@@ -9,6 +9,7 @@ namespace UnityEngine.InputSystem
 		private readonly List<InputActionMap> _actionMaps = new();
 
 		public IReadOnlyList<InputActionMap> actionMaps => _actionMaps;
+		public String enabled { get; set; }
 
 		public void Enable()
 		{

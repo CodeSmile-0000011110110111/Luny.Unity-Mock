@@ -6,6 +6,6 @@ namespace UnityEngine.InputSystem
 		Waiting,
 		Started,
 		Performed,
-		Canceled
+		Canceled,
 	}
 }

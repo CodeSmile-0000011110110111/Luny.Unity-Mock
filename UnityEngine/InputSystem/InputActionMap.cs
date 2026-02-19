@@ -12,10 +12,7 @@ namespace UnityEngine.InputSystem
 		public IReadOnlyList<InputAction> actions => _actions;
 		public Boolean enabled { get; private set; }
 
-		public InputActionMap(String name = default)
-		{
-			this.name = name;
-		}
+		public InputActionMap(String name = default) => this.name = name;
 
 		public void Enable()
 		{
@@ -36,6 +33,7 @@ namespace UnityEngine.InputSystem
 			var action = _actions.FirstOrDefault(a => a.name == name);
 			if (action == null && throwIfNotFound)
 				throw new ArgumentException($"Action '{name}' not found in action map '{this.name}'");
+
 			return action;
 		}
 

@@ -4,6 +4,6 @@ namespace UnityEngine.InputSystem
 	{
 		Value,
 		Button,
-		PassThrough
+		PassThrough,
 	}
 }

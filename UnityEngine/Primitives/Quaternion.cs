@@ -44,11 +44,20 @@ namespace UnityEngine
 			{
 				switch (index)
 				{
-					case 0: x = value; break;
-					case 1: y = value; break;
-					case 2: z = value; break;
-					case 3: w = value; break;
-					default: throw new IndexOutOfRangeException("Invalid Quaternion index!");
+					case 0:
+						x = value;
+						break;
+					case 1:
+						y = value;
+						break;
+					case 2:
+						z = value;
+						break;
+					case 3:
+						w = value;
+						break;
+					default:
+						throw new IndexOutOfRangeException("Invalid Quaternion index!");
 				}
 			}
 		}
@@ -84,9 +93,8 @@ namespace UnityEngine
 		public static Quaternion LerpUnclamped(Quaternion a, Quaternion b, Single t) =>
 			FromNumerics(System.Numerics.Quaternion.Lerp(a._value, b._value, t));
 
-		public static Quaternion AngleAxis(Single angle, Vector3 axis) =>
-			FromNumerics(System.Numerics.Quaternion.CreateFromAxisAngle(
-				new System.Numerics.Vector3(axis.x, axis.y, axis.z), angle * (MathF.PI / 180f)));
+		public static Quaternion AngleAxis(Single angle, Vector3 axis) => FromNumerics(System.Numerics.Quaternion.CreateFromAxisAngle(
+			new System.Numerics.Vector3(axis.x, axis.y, axis.z), angle * (MathF.PI / 180f)));
 
 		public static Quaternion operator *(Quaternion lhs, Quaternion rhs) =>
 			FromNumerics(System.Numerics.Quaternion.Multiply(lhs._value, rhs._value));
@@ -98,13 +106,12 @@ namespace UnityEngine
 			var s = q.W;
 			var p = new System.Numerics.Vector3(point.x, point.y, point.z);
 			var result = 2f * System.Numerics.Vector3.Dot(u, p) * u
-				+ (s * s - System.Numerics.Vector3.Dot(u, u)) * p
-				+ 2f * s * System.Numerics.Vector3.Cross(u, p);
+			             + (s * s - System.Numerics.Vector3.Dot(u, u)) * p
+			             + 2f * s * System.Numerics.Vector3.Cross(u, p);
 			return new Vector3(result.X, result.Y, result.Z);
 		}
 
-		public static Boolean operator ==(Quaternion lhs, Quaternion rhs) =>
-			MathF.Abs(Dot(lhs, rhs)) > 1f - 1e-06f;
+		public static Boolean operator ==(Quaternion lhs, Quaternion rhs) => MathF.Abs(Dot(lhs, rhs)) > 1f - 1e-06f;
 
 		public static Boolean operator !=(Quaternion lhs, Quaternion rhs) => !(lhs == rhs);
 

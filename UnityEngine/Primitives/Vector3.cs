@@ -37,10 +37,17 @@ namespace UnityEngine
 			{
 				switch (index)
 				{
-					case 0: x = value; break;
-					case 1: y = value; break;
-					case 2: z = value; break;
-					default: throw new IndexOutOfRangeException("Invalid Vector3 index!");
+					case 0:
+						x = value;
+						break;
+					case 1:
+						y = value;
+						break;
+					case 2:
+						z = value;
+						break;
+					default:
+						throw new IndexOutOfRangeException("Invalid Vector3 index!");
 				}
 			}
 		}
@@ -95,7 +102,10 @@ namespace UnityEngine
 		public static Vector3 Max(Vector3 lhs, Vector3 rhs) => FromNumerics(System.Numerics.Vector3.Max(lhs._value, rhs._value));
 		public static Vector3 Min(Vector3 lhs, Vector3 rhs) => FromNumerics(System.Numerics.Vector3.Min(lhs._value, rhs._value));
 		public static Vector3 Scale(Vector3 a, Vector3 b) => FromNumerics(a._value * b._value);
-		public static Vector3 Reflect(Vector3 inDirection, Vector3 inNormal) => FromNumerics(System.Numerics.Vector3.Reflect(inDirection._value, inNormal._value));
+
+		public static Vector3 Reflect(Vector3 inDirection, Vector3 inNormal) =>
+			FromNumerics(System.Numerics.Vector3.Reflect(inDirection._value, inNormal._value));
+
 		public static Vector3 Normalize(Vector3 value) => value.normalized;
 
 		public static Vector3 operator +(Vector3 a, Vector3 b) => FromNumerics(a._value + b._value);

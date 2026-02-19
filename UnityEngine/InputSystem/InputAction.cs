@@ -2,8 +2,11 @@ using System;
 
 namespace UnityEngine.InputSystem
 {
- public sealed class InputAction
+	public sealed class InputAction
 	{
+		public event Action<CallbackContext> started;
+		public event Action<CallbackContext> performed;
+		public event Action<CallbackContext> canceled;
 		private System.Object _lastValue;
 		private InputActionPhase _phase = InputActionPhase.Disabled;
 
@@ -12,10 +15,6 @@ namespace UnityEngine.InputSystem
 		public String expectedControlType { get; }
 		public InputActionPhase phase => _phase;
 		public Boolean enabled => _phase != InputActionPhase.Disabled;
-
-		public event Action<CallbackContext> started;
-		public event Action<CallbackContext> performed;
-		public event Action<CallbackContext> canceled;
 
 		public InputAction(String name = default, InputActionType type = default, String expectedControlType = default)
 		{
@@ -32,17 +31,16 @@ namespace UnityEngine.InputSystem
 
 		public void Disable() => _phase = InputActionPhase.Disabled;
 
-		public TValue ReadValue<TValue>() where TValue : struct =>
-			_lastValue is TValue v ? v : default;
+		public TValue ReadValue<TValue>() where TValue : struct => _lastValue is TValue v ? v : default;
 
 		/// <summary>
 		/// Internal method for tests to trigger the started callback.
 		/// </summary>
 		internal void InternalTriggerStarted<T>(T value) where T : struct
 		{
-			_lastValue = (System.Object)value;
+			_lastValue = value;
 			_phase = InputActionPhase.Started;
-			started?.Invoke(new CallbackContext(this, _phase, (System.Object)value));
+			started?.Invoke(new CallbackContext(this, _phase, value));
 		}
 
 		/// <summary>
@@ -50,9 +48,9 @@ namespace UnityEngine.InputSystem
 		/// </summary>
 		internal void InternalTriggerPerformed<T>(T value) where T : struct
 		{
-			_lastValue = (System.Object)value;
+			_lastValue = value;
 			_phase = InputActionPhase.Performed;
-			performed?.Invoke(new CallbackContext(this, _phase, (System.Object)value));
+			performed?.Invoke(new CallbackContext(this, _phase, value));
 		}
 
 		/// <summary>
@@ -60,9 +58,9 @@ namespace UnityEngine.InputSystem
 		/// </summary>
 		internal void InternalTriggerCanceled<T>(T value) where T : struct
 		{
-			_lastValue = (System.Object)value;
+			_lastValue = value;
 			_phase = InputActionPhase.Canceled;
-			canceled?.Invoke(new CallbackContext(this, _phase, (System.Object)value));
+			canceled?.Invoke(new CallbackContext(this, _phase, value));
 			_phase = InputActionPhase.Waiting;
 		}
 
@@ -80,8 +78,7 @@ namespace UnityEngine.InputSystem
 				_value = value;
 			}
 
-			public TValue ReadValue<TValue>() where TValue : struct =>
-				_value is TValue v ? v : default;
+			public TValue ReadValue<TValue>() where TValue : struct => _value is TValue v ? v : default;
 		}
 	}
 }

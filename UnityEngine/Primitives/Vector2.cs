@@ -30,9 +30,14 @@ namespace UnityEngine
 			{
 				switch (index)
 				{
-					case 0: x = value; break;
-					case 1: y = value; break;
-					default: throw new IndexOutOfRangeException("Invalid Vector2 index!");
+					case 0:
+						x = value;
+						break;
+					case 1:
+						y = value;
+						break;
+					default:
+						throw new IndexOutOfRangeException("Invalid Vector2 index!");
 				}
 			}
 		}
@@ -84,7 +89,10 @@ namespace UnityEngine
 		public static Vector2 Max(Vector2 lhs, Vector2 rhs) => FromNumerics(System.Numerics.Vector2.Max(lhs._value, rhs._value));
 		public static Vector2 Min(Vector2 lhs, Vector2 rhs) => FromNumerics(System.Numerics.Vector2.Min(lhs._value, rhs._value));
 		public static Vector2 Scale(Vector2 a, Vector2 b) => FromNumerics(a._value * b._value);
-		public static Vector2 Reflect(Vector2 inDirection, Vector2 inNormal) => FromNumerics(System.Numerics.Vector2.Reflect(inDirection._value, inNormal._value));
+
+		public static Vector2 Reflect(Vector2 inDirection, Vector2 inNormal) =>
+			FromNumerics(System.Numerics.Vector2.Reflect(inDirection._value, inNormal._value));
+
 		public static Vector2 Normalize(Vector2 value) => value.normalized;
 
 		public static implicit operator Vector3(Vector2 v) => new(v.x, v.y, 0f);

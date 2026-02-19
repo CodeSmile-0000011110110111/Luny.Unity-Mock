@@ -28,6 +28,7 @@ namespace UnityEngine.InputSystem
 			var map = _actionMaps.FirstOrDefault(m => m.name == name);
 			if (map == null && throwIfNotFound)
 				throw new ArgumentException($"Action map '{name}' not found");
+
 			return map;
 		}
 

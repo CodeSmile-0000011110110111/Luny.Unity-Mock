@@ -1,5 +1,11 @@
 ﻿namespace UnityEngine
 {
+	public enum Space
+	{
+		World,
+		Self,
+	}
+
 	public enum LogType
 	{
 		Error,
